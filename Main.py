@@ -1,13 +1,13 @@
-#Skeleton Program code for the AQA A Level Paper 1 Summer 2026 examination
-#this code should be used in conjunction with the Preliminary Material
-#written by the AQA Programmer Team
-#developed in the Python 3.9 programming environment
-#Version 2  
+# - School Comments
+#! Nebin Comments
+#? Possible Questions
+# - __: Protected _:Private +:Public
+
 
 import random
 
 def Main():
-    SimulationParameters = []
+    SimulationParameters = [] #! Setting empty simulation parameters.
     SimNo = input("Enter simulation number: ")
     if SimNo == "1":
         SimulationParameters = [1, 5, 5, 500, 3, 5, 1000, 50]
@@ -17,14 +17,14 @@ def Main():
         SimulationParameters = [1, 10, 10, 500, 3, 9, 1000, 25]
     elif SimNo == "4":
         SimulationParameters = [2, 10, 10, 500, 3, 6, 1000, 25]
-    ThisSimulation = Simulation(SimulationParameters)
-    Choice = ""
-    while Choice != "9":
+    ThisSimulation = Simulation(SimulationParameters) #!Instantiation
+    Choice = "" #! Setting empty choice
+    while Choice != "9": #! As long as we do not exit the program we...
         DisplayMenu()
         Choice = GetChoice()
         if Choice == "1":
-            print(ThisSimulation.GetDetails())
-        elif Choice == "2":
+            print(ThisSimulation.GetDetails()) #! Method referring to the details of the simulation
+        elif Choice == "2": #!Displaying the details of the area
             StartRow = 0
             StartColumn = 0
             EndRow = 0
@@ -32,21 +32,21 @@ def Main():
             StartRow, StartColumn = GetCellReference()
             EndRow, EndColumn = GetCellReference()
             print(ThisSimulation.GetAreaDetails(StartRow, StartColumn, EndRow, EndColumn))
-        elif Choice == "3":
+        elif Choice == "3": #!Displaying the information of a cell
             Row = 0
             Column = 0
             Row, Column = GetCellReference()
             print(ThisSimulation.GetCellDetails(Row, Column))
-        elif Choice == "4":
+        elif Choice == "4": #!Advancing one stage.
             ThisSimulation.AdvanceStage(1)
             print("Simulation moved on one stage\n")
-        elif Choice == "5":
+        elif Choice == "5": #!Advancing more than one stage.
             NumberOfStages = int(input("Enter number of stages to advance by: "))
             ThisSimulation.AdvanceStage(NumberOfStages)
             print(f"Simulation moved on {NumberOfStages} stages" + "\n")
     input()
 
-def DisplayMenu():
+def DisplayMenu(): #!Function which is called in Main() where it prints the main menu ?Possible question adds onto the menu?
     print()
     print("1. Display overall details")
     print("2. Display area details")
@@ -58,18 +58,18 @@ def DisplayMenu():
     print("> ", end='')
 
 def GetChoice():
-    Choice = input()
-    return Choice
+    Choice = input() #!Input
+    return Choice 
 
 def GetCellReference():
     print()
     Row = int(input("Enter row number: "))
     Column = int(input("Enter column number: "))
     print()
-    return Row, Column
+    return Row, Column 
 
 class Simulation():
-    def __init__(self, SimulationParameters):
+    def __init__(self, SimulationParameters): #!{Private data}, accessible by using the array. We can create another simulation from this.
         self._StartingNumberOfNests = SimulationParameters[0]
         self._NumberOfRows = SimulationParameters[1]
         self._NumberOfColumns = SimulationParameters[2]
@@ -78,7 +78,7 @@ class Simulation():
         self._StartingAntsInNest = SimulationParameters[5]
         self._NewPheromoneStrength = SimulationParameters[6]
         self._PheromoneDecay = SimulationParameters[7]
-        self._Nests = []
+        self._Nests = [] #Next 4 will be filled with objects
         self._Ants = []
         self._Pheromones = []
         self._Grid = []
@@ -92,12 +92,12 @@ class Simulation():
             Allowed = False
             while Allowed == False:
                 Allowed = True
-                Row = random.randint(1, self._NumberOfRows)
+                Row = random.randint(1, self._NumberOfRows) #!Randomly setting the Row and Column number for the nest meaning they are always randomly generated.
                 Column = random.randint(1, self._NumberOfColumns)
                 for N in self._Nests:
-                    if N.GetRow() == Row and N.GetColumn() == Column:
+                    if N.GetRow() == Row and N.GetColumn() == Column: #!Checking that an nest is not already in use.
                         Allowed = False
-            self.SetUpANestAt(Row, Column)
+            self.SetUpANestAt(Row, Column) #!Creating the nest
         for Count in range(1, self._StartingNumberOfFoodCells + 1):
             Allowed = False
             while Allowed == False:
@@ -107,21 +107,21 @@ class Simulation():
                 for N in self._Nests:
                     if N.GetRow() == Row and N.GetColumn() == Column:
                         Allowed = False
-            self.AddFoodToCell(Row, Column,500)
+            self.AddFoodToCell(Row, Column,500) #!Is not checking that there is not a food cell already there but will check that if there is a nest there.
 
-    def SetUpANestAt(self, Row, Column):
-        self._Nests.append(Nest(Row, Column, self._StartingFoodInNest))
-        self._Ants.append(QueenAnt(Row, Column, Row, Column))
+    def SetUpANestAt(self, Row, Column): #!Setting up the nest
+        self._Nests.append(Nest(Row, Column, self._StartingFoodInNest)) 
+        self._Ants.append(QueenAnt(Row, Column, Row, Column)) #Adds the queen ant
         for Worker in range(2, self._StartingAntsInNest + 1):
-            self._Ants.append(WorkerAnt(Row, Column, Row, Column))
+            self._Ants.append(WorkerAnt(Row, Column, Row, Column)) #Adds the worker ant
 
-    def AddFoodToCell(self, Row, Column, Quantity):
+    def AddFoodToCell(self, Row, Column, Quantity): #!Adding food indicates that the food cell which add onto food that might already be there.
         self._Grid[self.__GetIndex(Row, Column)].UpdateFoodInCell(Quantity)
 
     def __GetIndex(self, Row, Column):
         return (Row - 1) * self._NumberOfColumns + Column - 1
 
-    def __GetIndicesOfNeighbours(self, Row, Column):
+    def __GetIndicesOfNeighbours(self, Row, Column): #!Returns the index numbers of the neighbouring cells
         ListOfNeighbours = []
         for RowDirection in [-1, 0, 1]:
             for ColumnDirection in [-1, 0, 1]:
