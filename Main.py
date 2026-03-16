@@ -1,7 +1,8 @@
 # - School Comments
 #! Nebin Comments
+#Todo Added Changes
 #? Possible Questions
-# - __: Protected _:Private +:Public
+# - _: Protected __:Private +:Public
 
 
 import random
@@ -9,6 +10,13 @@ import random
 def Main():
     SimulationParameters = [] #! Setting empty simulation parameters.
     SimNo = input("Enter simulation number: ")
+
+    #TODO Simulation Number validation
+
+    if int(SimNo) < 0 or int(SimNo) > 5:
+        print("Invalid simulation number, try again")
+        Main()
+        
     if SimNo == "1":
         SimulationParameters = [1, 5, 5, 500, 3, 5, 1000, 50]
     elif SimNo == "2":
@@ -61,15 +69,29 @@ def GetChoice():
     Choice = input() #!Input
     return Choice 
 
-def GetCellReference():
+#TODO CellReference validation
+def GetCellReference(Sim):
     print()
-    Row = int(input("Enter row number: "))
-    Column = int(input("Enter column number: "))
-    print()
-    return Row, Column 
+    Hold = False
+    while Hold == False:
+        Row = int(input("Enter row number: "))
+        if Row>=1 and Row<=Sim._NumberOfRows:
+            Hold = True
+        else:
+            print("Invalid row number, try again")
+            Hold = False
+            
+    Hold = False
+    while Hold == False:
+        Col = int(input("Enter column number: "))
+        if Col>=1 and Col<=Sim._NumberOfColumns:
+            Hold = True
+        else:
+            print("Invalid column number, try again")
+            Hold = False
 
 class Simulation():
-    def __init__(self, SimulationParameters): #!{Private data}, accessible by using the array. We can create another simulation from this.
+    def __init__(self, SimulationParameters): #!{Protected data}, accessible by using the array. We can create another simulation from this.
         self._StartingNumberOfNests = SimulationParameters[0]
         self._NumberOfRows = SimulationParameters[1]
         self._NumberOfColumns = SimulationParameters[2]
@@ -293,7 +315,7 @@ class Entity():
         pass
 
     def GetDetails(self):
-        return ""
+        return "" #? Possible question to return some other values possible in a f string.
 
 class Cell(Entity):
     def __init__(self, StartRow, StartColumn):
