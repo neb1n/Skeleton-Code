@@ -6,6 +6,7 @@
 
 
 import random
+from tkinter.tix import COLUMN
 
 def Main():
     SimulationParameters = [] #! Setting empty simulation parameters.
@@ -52,6 +53,12 @@ def Main():
             NumberOfStages = int(input("Enter number of stages to advance by: "))
             ThisSimulation.AdvanceStage(NumberOfStages)
             print(f"Simulation moved on {NumberOfStages} stages" + "\n")
+        elif Choice == "6":
+            ThisSimulation.PrintSummary() 
+        elif Choice == "7":
+            ThisSimulation.PrintAnts()
+        elif Choice == "9":
+            quit()
     input()
 
 def DisplayMenu(): #!Function which is called in Main() where it prints the main menu ?Possible question adds onto the menu?
@@ -61,6 +68,8 @@ def DisplayMenu(): #!Function which is called in Main() where it prints the main
     print("3. Inspect cell")
     print("4. Advance one stage")
     print("5. Advance X stages")
+    print("6. Display Summary")
+    print("7. Display Ants")
     print("9. Quit")
     print()
     print("> ", end='')
@@ -130,6 +139,24 @@ class Simulation():
                     if N.GetRow() == Row and N.GetColumn() == Column:
                         Allowed = False
             self.AddFoodToCell(Row, Column,500) #!Is not checking that there is not a food cell already there but will check that if there is a nest there.
+
+    def PrintSummary(self):
+        print("===Simulation Summary===\n")
+        print(f"Grid Size {self._NumberOfColumns},{self._NumberOfRows}\n")
+        print(f"Number of nests is {len(self._Nests)}\n")
+        print(f"Number of ants is {len(self._Ants)}\n")
+        food = 0 
+
+        for c in self._Grid:
+            food += c.GetAmountOfFood()
+        print(f"Total food {food}")
+
+    def PrintAnts(self):
+        print("List of all ants")
+        for ant in self._Ants:
+            print(f"ID {ant._ID}, Type is {ant._TypeOfAnt}, Nest is at {ant._NestRow}, {ant._NestColumn}")
+
+
 
     def SetUpANestAt(self, Row, Column): #!Setting up the nest
         self._Nests.append(Nest(Row, Column, self._StartingFoodInNest)) 
