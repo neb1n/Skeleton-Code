@@ -57,6 +57,8 @@ def Main():
             ThisSimulation.PrintSummary() 
         elif Choice == "7":
             ThisSimulation.PrintAnts()
+        elif Choice == "8":
+            ThisSimulation.PrintDeliver()
         elif Choice == "9":
             quit()
     input()
@@ -70,6 +72,7 @@ def DisplayMenu(): #!Function which is called in Main() where it prints the main
     print("5. Advance X stages")
     print("6. Display Summary")
     print("7. Display Ants")
+    print("8. Print Ant Food Delivery")
     print("9. Quit")
     print()
     print("> ", end='')
@@ -113,6 +116,9 @@ class Simulation():
         self._Ants = []
         self._Pheromones = []
         self._Grid = []
+        self._AntList = {}
+        self._FoodDelivery = dict[int,int]()
+
         Row = 0
         Column = 0
         for Row in range(1, self._NumberOfRows + 1):
@@ -156,7 +162,15 @@ class Simulation():
         for ant in self._Ants:
             print(f"ID {ant._ID}, Type is {ant._TypeOfAnt}, Nest is at {ant._NestRow}, {ant._NestColumn}")
 
-
+    def PrintDeliver(self):
+        print("Ant Food Delivered")
+        print("==================")
+        totalFood = 0
+        for AntID, Qty in self._FoodDelivery.items():
+            print(AntID, " ", Qty)
+            totalFood += Qty
+        print("Total food delivered is ", totalFood)
+        return
 
     def SetUpANestAt(self, Row, Column): #!Setting up the nest
         self._Nests.append(Nest(Row, Column, self._StartingFoodInNest)) 
@@ -381,6 +395,9 @@ class Ant(Entity):
 
     def AdvanceStage(self, Nests, Ants, Pheromones):
         self._Stages += 1
+        self._AddFoodToNest(WorkerAnt)
+        self._FoodDelivery.setdefault(A.GetID(), 0)
+        self._FoodDelivery[A.GetID] += A.GetFoodCarried()
 
     def GetDetails(self):
         return f"{super().GetDetails()}  Ant {self._ID}, {self._TypeOfAnt}, stages alive: {self._Stages}"
