@@ -6,7 +6,6 @@
 
 
 import random
-from tkinter.tix import COLUMN
 
 def Main():
     SimulationParameters = [] #! Setting empty simulation parameters.
@@ -319,8 +318,12 @@ class Simulation():
                 A.AdvanceStage(self._Nests, self._Ants, self._Pheromones)
                 CurrentCell = self._Grid[self.__GetIndex(A.GetRow(), A.GetColumn())]
                 if A.GetFoodCarried() > 0 and A.IsAtOwnNest():
-                    self.AddFoodToNest(A.GetFoodCarried(), A.GetRow(), A.GetColumn())
-                    A.UpdateFoodCarried(-A.GetFoodCarried())
+                    qty = A.GetFoodCarried()
+                    self.AddFoodToNest(qty, A.GetRow(), A.GetColumn())
+                    # Record delivery per-ant
+                    self._FoodDelivery.setdefault(A.GetID(), 0)
+                    self._FoodDelivery[A.GetID()] += qty
+                    A.UpdateFoodCarried(-qty)
                 elif CurrentCell.GetAmountOfFood() > 0 and A.GetFoodCarried() == 0 and A.GetFoodCapacity() > 0:
                     FoodObtained = CurrentCell.GetAmountOfFood() + 1
                     while FoodObtained > CurrentCell.GetAmountOfFood() or (A.GetFoodCarried() + FoodObtained) > A.GetFoodCapacity():
@@ -395,9 +398,7 @@ class Ant(Entity):
 
     def AdvanceStage(self, Nests, Ants, Pheromones):
         self._Stages += 1
-        self._AddFoodToNest(WorkerAnt)
-        self._FoodDelivery.setdefault(A.GetID(), 0)
-        self._FoodDelivery[A.GetID] += A.GetFoodCarried()
+        return
 
     def GetDetails(self):
         return f"{super().GetDetails()}  Ant {self._ID}, {self._TypeOfAnt}, stages alive: {self._Stages}"
